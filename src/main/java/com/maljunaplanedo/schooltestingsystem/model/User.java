@@ -21,5 +21,6 @@ public class User {
 
     private String roles;
 
+    @Column(unique = true)
     private String inviteCode;
 }
