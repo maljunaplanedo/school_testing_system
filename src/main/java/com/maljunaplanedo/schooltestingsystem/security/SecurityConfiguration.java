@@ -11,7 +11,6 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
@@ -43,7 +42,7 @@ public class SecurityConfiguration {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -56,6 +55,7 @@ public class SecurityConfiguration {
                 // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 //.and()
             .authorizeRequests()
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/teacher/**").hasRole("TEACHER")
                 .antMatchers("/api/student/**", "/api/live/connect/**").hasRole("STUDENT")
                 .antMatchers("/api/auth/login", "/api/auth/register").anonymous()
