@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/teacher")
-public class TeacherController {
+@RequestMapping("/api/admin")
+public class AdminController {
     private UserService userService;
 
     @Autowired
@@ -17,18 +17,13 @@ public class TeacherController {
         this.userService = userService;
     }
 
-    @GetMapping("")
-    public String index() {
-        return "some info available only for teachers";
+    @PostMapping("/teacher")
+    public AddUserResponseDto addTeacher(@RequestBody AddUserDto userInfo) throws BadDataFormatException {
+        return userService.addTeacher(userInfo);
     }
 
-    @PostMapping("/student")
-    public AddUserResponseDto addStudent(@RequestBody AddUserDto userInfo) throws BadDataFormatException {
-        return userService.addStudent(userInfo);
-    }
-
-    @DeleteMapping("/student/{id}")
-    public void deleteStudent(@PathVariable long id) throws BadDataFormatException {
-        userService.removeStudent(id);
+    @DeleteMapping("/teacher/{id}")
+    public void removeTeacher(@PathVariable long id) throws BadDataFormatException {
+        userService.removeTeacher(id);
     }
 }

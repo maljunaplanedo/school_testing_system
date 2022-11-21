@@ -2,7 +2,7 @@ package com.maljunaplanedo.schooltestingsystem.controller;
 
 import com.maljunaplanedo.schooltestingsystem.dto.RegistrationFailureCause;
 import com.maljunaplanedo.schooltestingsystem.dto.RegistrationResponseDto;
-import com.maljunaplanedo.schooltestingsystem.exception.BadRegistrationDataFormatException;
+import com.maljunaplanedo.schooltestingsystem.exception.BadDataFormatException;
 import com.maljunaplanedo.schooltestingsystem.exception.UsernameAlreadyUsedException;
 import com.maljunaplanedo.schooltestingsystem.exception.WrongInviteCodeException;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class ControllerExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(BadRegistrationDataFormatException.class)
+    @ExceptionHandler(BadDataFormatException.class)
     public void badFormat() {
 
     }

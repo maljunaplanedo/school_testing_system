@@ -2,6 +2,7 @@ package com.maljunaplanedo.schooltestingsystem.controller;
 
 import com.maljunaplanedo.schooltestingsystem.dto.RegistrationFormDto;
 import com.maljunaplanedo.schooltestingsystem.dto.RegistrationResponseDto;
+import com.maljunaplanedo.schooltestingsystem.exception.BadDataFormatException;
 import com.maljunaplanedo.schooltestingsystem.exception.RegistrationException;
 import com.maljunaplanedo.schooltestingsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,8 @@ public class RegistrationController {
     }
 
     @PostMapping("")
-    public RegistrationResponseDto register(@RequestBody RegistrationFormDto formData) throws RegistrationException {
+    public RegistrationResponseDto register(@RequestBody RegistrationFormDto formData)
+            throws RegistrationException, BadDataFormatException {
         userService.register(formData);
         return RegistrationResponseDto.success();
     }

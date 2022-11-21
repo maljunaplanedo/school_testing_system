@@ -19,8 +19,12 @@ public class User {
 
     private String password;
 
-    private String roles;
+    private String role;
 
     @Column(unique = true)
     private String inviteCode;
+
+    private String firstName;
+
+    private String lastName;
 }

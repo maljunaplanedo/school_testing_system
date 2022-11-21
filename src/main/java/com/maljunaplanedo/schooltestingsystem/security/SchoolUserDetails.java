@@ -7,26 +7,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SchoolUserDetails implements UserDetails {
 
     private String username;
     private String password;
-    private List<GrantedAuthority> authorities;
+    private GrantedAuthority authority;
 
     public SchoolUserDetails(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.authorities = Stream.of(user.getRoles().split(","))
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList());
+        this.authority = new SimpleGrantedAuthority(user.getRole());
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return List.of(authority);
     }
 
     @Override

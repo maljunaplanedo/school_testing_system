@@ -36,7 +36,7 @@ public class AdminUserLoader implements ApplicationRunner {
 
         admin.setUsername(ADMIN_USERNAME);
         admin.setPassword(passwordEncoder.encode(ADMIN_PASSWORD));
-        admin.setRoles("ADMIN");
+        admin.setRole("ADMIN");
         userRepository.save(admin);
     }
 }

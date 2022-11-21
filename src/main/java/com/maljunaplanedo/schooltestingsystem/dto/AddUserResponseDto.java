@@ -1,13 +1,12 @@
 package com.maljunaplanedo.schooltestingsystem.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RegistrationFormDto {
+@AllArgsConstructor
+public class AddUserResponseDto {
     private String inviteCode;
-    private String username;
-    private String password;
 }
