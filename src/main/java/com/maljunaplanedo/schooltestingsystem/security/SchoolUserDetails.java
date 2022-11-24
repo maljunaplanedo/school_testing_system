@@ -10,14 +10,14 @@ import java.util.List;
 
 public class SchoolUserDetails implements UserDetails {
 
-    private String username;
-    private String password;
-    private GrantedAuthority authority;
+    private final String username;
+    private final String password;
+    private final GrantedAuthority authority;
 
     public SchoolUserDetails(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.authority = new SimpleGrantedAuthority(user.getRole());
+        this.authority = new SimpleGrantedAuthority(user.getRole().toString());
     }
 
     @Override

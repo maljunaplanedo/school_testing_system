@@ -8,8 +8,11 @@ import com.maljunaplanedo.schooltestingsystem.exception.RegistrationException;
 import com.maljunaplanedo.schooltestingsystem.exception.UsernameAlreadyUsedException;
 import com.maljunaplanedo.schooltestingsystem.exception.WrongInviteCodeException;
 import com.maljunaplanedo.schooltestingsystem.model.User;
+import com.maljunaplanedo.schooltestingsystem.model.UserRole;
+import com.maljunaplanedo.schooltestingsystem.repository.ClassRepository;
 import com.maljunaplanedo.schooltestingsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +24,10 @@ public class UserService {
     private final static String INVITE_CODE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     private final static int INVITE_CODE_LENGTH = 6;
-    
+
     private UserRepository userRepository;
+
+    private ClassRepository classRepository;
 
     private PasswordEncoder passwordEncoder;
 
@@ -32,12 +37,18 @@ public class UserService {
     }
 
     @Autowired
+    void setClassRepository(ClassRepository classRepository) {
+        this.classRepository = classRepository;
+    }
+
+    @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
-    private boolean badCredentialFormat(String credential) {
-        return credential.length() < 4 || credential.length() > 64 || !credential.matches("^[a-zA-Z0-9_.-]+$");
+    private boolean badCredentialFormat(@Nullable String credential) {
+        return credential == null || credential.length() < 4 || credential.length() > 64
+            || !credential.matches("^[a-zA-Z0-9_.-]+$");
     }
 
     @Transactional
@@ -47,7 +58,6 @@ public class UserService {
         String inviteCode = formData.getInviteCode();
 
         if (
-            username == null || password == null ||
             inviteCode == null || badCredentialFormat(username) ||
             badCredentialFormat(password)
         ) {
@@ -91,20 +101,32 @@ public class UserService {
         }
     }
 
-    private boolean badNameFormat(String name) {
-        return name.isEmpty() || name.length() > 64 || !name.matches("^[ЁёА-я ]+$");
+    private boolean badNameFormat(@Nullable String name) {
+        return name == null || name.isEmpty() || name.length() > 64 || !name.matches("^[ЁёА-я ]+$");
     }
 
     @Transactional
-    protected AddUserResponseDto addUser(String role, AddUserDto userInfo) throws BadDataFormatException {
+    protected AddUserResponseDto addUser(UserRole role, AddUserDto userInfo) throws BadDataFormatException {
         var firstName = userInfo.getFirstName();
         var lastName = userInfo.getLastName();
 
-        if (firstName == null || lastName == null || badNameFormat(firstName) || badNameFormat(lastName)) {
+        if (badNameFormat(firstName) || badNameFormat(lastName)) {
             throw new BadDataFormatException("Bad data format");
         }
 
-        User user = new User();
+        var user = new User();
+
+        if (role.equals(UserRole.STUDENT)) {
+            var classId = userInfo.getClassId();
+            if (classId == null) {
+                throw new BadDataFormatException("Class id not provided");
+            }
+            var schoolClass = classRepository
+                .findById(classId)
+                .orElseThrow(() -> new BadDataFormatException("Class does not exist"));
+            user.setSchoolClass(schoolClass);
+        }
+
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(role);
@@ -117,15 +139,15 @@ public class UserService {
     }
 
     public AddUserResponseDto addStudent(AddUserDto userInfo) throws BadDataFormatException {
-        return addUser("STUDENT", userInfo);
+        return addUser(UserRole.STUDENT, userInfo);
     }
 
     public AddUserResponseDto addTeacher(AddUserDto userInfo) throws BadDataFormatException {
-        return addUser("TEACHER", userInfo);
+        return addUser(UserRole.TEACHER, userInfo);
     }
 
     @Transactional
-    protected void removeUser(String role, long id) throws BadDataFormatException {
+    protected void removeUser(UserRole role, long id) throws BadDataFormatException {
         var user = userRepository
             .findById(id)
             .orElseThrow(() -> new BadDataFormatException("User does not exist"));
@@ -136,10 +158,10 @@ public class UserService {
     }
 
     public void removeStudent(long id) throws BadDataFormatException {
-        removeUser("STUDENT", id);
+        removeUser(UserRole.STUDENT, id);
     }
 
     public void removeTeacher(long id) throws BadDataFormatException {
-        removeUser("TEACHER", id);
+        removeUser(UserRole.TEACHER, id);
     }
 }

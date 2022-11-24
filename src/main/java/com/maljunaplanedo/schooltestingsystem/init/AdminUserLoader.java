@@ -1,6 +1,7 @@
 package com.maljunaplanedo.schooltestingsystem.init;
 
 import com.maljunaplanedo.schooltestingsystem.model.User;
+import com.maljunaplanedo.schooltestingsystem.model.UserRole;
 import com.maljunaplanedo.schooltestingsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,7 @@ public class AdminUserLoader implements ApplicationRunner {
 
         admin.setUsername(ADMIN_USERNAME);
         admin.setPassword(passwordEncoder.encode(ADMIN_PASSWORD));
-        admin.setRole("ADMIN");
+        admin.setRole(UserRole.ADMIN);
         userRepository.save(admin);
     }
 }

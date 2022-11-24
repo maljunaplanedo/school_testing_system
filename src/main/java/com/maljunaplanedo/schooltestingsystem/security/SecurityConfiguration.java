@@ -1,5 +1,6 @@
 package com.maljunaplanedo.schooltestingsystem.security;
 
+import com.maljunaplanedo.schooltestingsystem.model.UserRole;
 import com.maljunaplanedo.schooltestingsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -54,9 +55,9 @@ public class SecurityConfiguration {
                 // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 //.and()
             .authorizeRequests()
-                .antMatchers("/api/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/teacher/**").hasRole("TEACHER")
-                .antMatchers("/api/student/**", "/api/live/connect/**").hasRole("STUDENT")
+                .antMatchers("/api/admin/**").hasRole(UserRole.ADMIN.toString())
+                .antMatchers("/api/teacher/**").hasRole(UserRole.TEACHER.toString())
+                .antMatchers("/api/student/**", "/api/live/connect/**").hasRole(UserRole.STUDENT.toString())
                 .antMatchers("/api/auth/login", "/api/auth/register").anonymous()
                 .antMatchers("/api/auth/logout").authenticated()
                 .antMatchers(HttpMethod.GET).permitAll()

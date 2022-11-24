@@ -1,7 +1,6 @@
 package com.maljunaplanedo.schooltestingsystem.dto;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
@@ -9,4 +8,5 @@ import lombok.Setter;
 public class AddUserDto {
     private String firstName;
     private String lastName;
+    private Long classId;
 }

@@ -19,7 +19,7 @@ public class User {
 
     private String password;
 
-    private String role;
+    private UserRole role;
 
     @Column(unique = true)
     private String inviteCode;
@@ -27,4 +27,7 @@ public class User {
     private String firstName;
 
     private String lastName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SchoolClass schoolClass;
 }
