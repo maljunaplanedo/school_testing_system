@@ -7,31 +7,22 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "class_tasks")
 @Getter
 @Setter
-public class User {
+public class ClassTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true)
-    private String username;
-
-    private String password;
-
-    private UserRole role;
-
-    @Column(unique = true)
-    private String inviteCode;
-
-    private String firstName;
-
-    private String lastName;
+    @ManyToOne
+    private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SchoolClass schoolClass;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)
+    private Long deadline;
+
+    @OneToMany(mappedBy = "classTask", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<StudentTask> studentTasks;
 }

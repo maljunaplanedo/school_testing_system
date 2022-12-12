@@ -1,8 +1,8 @@
 package com.maljunaplanedo.schooltestingsystem.service;
 
-import com.maljunaplanedo.schooltestingsystem.dto.AddUserDto;
-import com.maljunaplanedo.schooltestingsystem.dto.AddUserResponseDto;
-import com.maljunaplanedo.schooltestingsystem.dto.RegistrationFormDto;
+import com.maljunaplanedo.schooltestingsystem.service.dto.ClassDto;
+import com.maljunaplanedo.schooltestingsystem.service.dto.UserDto;
+import com.maljunaplanedo.schooltestingsystem.service.dto.RegistrationFormDto;
 import com.maljunaplanedo.schooltestingsystem.exception.BadDataFormatException;
 import com.maljunaplanedo.schooltestingsystem.exception.RegistrationException;
 import com.maljunaplanedo.schooltestingsystem.exception.UsernameAlreadyUsedException;
@@ -13,13 +13,17 @@ import com.maljunaplanedo.schooltestingsystem.repository.ClassRepository;
 import com.maljunaplanedo.schooltestingsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
+@Transactional
 public class UserService {
     private final static String INVITE_CODE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -27,7 +31,7 @@ public class UserService {
 
     private UserRepository userRepository;
 
-    private ClassRepository classRepository;
+    private ClassService classService;
 
     private PasswordEncoder passwordEncoder;
 
@@ -37,8 +41,8 @@ public class UserService {
     }
 
     @Autowired
-    void setClassRepository(ClassRepository classRepository) {
-        this.classRepository = classRepository;
+    void setClassRepository(ClassService classService) {
+        this.classService = classService;
     }
 
     @Autowired
@@ -51,7 +55,6 @@ public class UserService {
             || !credential.matches("^[a-zA-Z0-9_.-]+$");
     }
 
-    @Transactional
     public void register(RegistrationFormDto formData) throws RegistrationException, BadDataFormatException {
         String username = formData.getUsername();
         String password = formData.getPassword();
@@ -105,8 +108,71 @@ public class UserService {
         return name == null || name.isEmpty() || name.length() > 64 || !name.matches("^[ЁёА-я ]+$");
     }
 
-    @Transactional
-    protected AddUserResponseDto addUser(UserRole role, AddUserDto userInfo) throws BadDataFormatException {
+    private User findById(long id) throws BadDataFormatException {
+        return userRepository
+            .findById(id)
+            .orElseThrow(() -> new BadDataFormatException("User does not exist"));
+    }
+
+    private User findByIdAndCheckRole(long id, UserRole role) throws BadDataFormatException {
+        var user = findById(id);
+        if (!user.getRole().equals(role)) {
+            throw new BadDataFormatException(String.format("The role of this user is not %s", role));
+        }
+        return user;
+    }
+
+    public Optional<User> currentUser() {
+        var currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        if (currentAuthentication == null) {
+            return Optional.empty();
+        }
+        return userRepository.findByUsername(currentAuthentication.getName());
+    }
+
+    public User currentUserSafe() throws BadDataFormatException {
+        return currentUser().orElseThrow(() -> new BadDataFormatException("No one is logged in"));
+    }
+
+    public List<UserDto> getAllUsers(UserRole role) {
+        return userRepository
+            .findAllByRole(role)
+            .stream()
+            .map(UserDto::brief)
+            .toList();
+    }
+
+    public List<UserDto> getAllStudents() {
+        return getAllUsers(UserRole.STUDENT);
+    }
+
+    public List<UserDto> getAllTeachers() {
+        return getAllUsers(UserRole.TEACHER);
+    }
+
+    private UserDto getUser(long id, UserRole role) throws BadDataFormatException {
+        var user = findByIdAndCheckRole(id, role);
+        return UserDto.full(user);
+    }
+
+    public UserDto getStudent(long id) throws BadDataFormatException {
+        return getUser(id, UserRole.STUDENT);
+    }
+
+    public UserDto getCurrentStudent() throws BadDataFormatException {
+        var user = currentUserSafe();
+        return getStudent(user.getId());
+    }
+
+    public UserDto getTeacher(long id) throws BadDataFormatException {
+        return getUser(id, UserRole.TEACHER);
+    }
+
+    private boolean badClass(@Nullable ClassDto classInfo) throws BadDataFormatException {
+        return classInfo == null || classInfo.getId() == null;
+    }
+
+    protected void saveUser(User user, UserDto userInfo) throws BadDataFormatException {
         var firstName = userInfo.getFirstName();
         var lastName = userInfo.getLastName();
 
@@ -114,54 +180,62 @@ public class UserService {
             throw new BadDataFormatException("Bad data format");
         }
 
-        var user = new User();
-
-        if (role.equals(UserRole.STUDENT)) {
-            var classId = userInfo.getClassId();
-            if (classId == null) {
-                throw new BadDataFormatException("Class id not provided");
+        if (user.getRole().equals(UserRole.STUDENT)) {
+            var classInfo = userInfo.getSchoolClass();
+            if (badClass(classInfo)) {
+                throw new BadDataFormatException("Bad data format");
             }
-            var schoolClass = classRepository
-                .findById(classId)
-                .orElseThrow(() -> new BadDataFormatException("Class does not exist"));
+
+            var schoolClass = classService.findById(classInfo.getId());
             user.setSchoolClass(schoolClass);
         }
 
         user.setFirstName(firstName);
         user.setLastName(lastName);
+
+        userRepository.save(user);
+    }
+
+    protected String addUser(UserRole role, UserDto userInfo) throws BadDataFormatException {
+        var user = new User();
         user.setRole(role);
 
         var inviteCode = generateUnusedInviteCode();
         user.setInviteCode(inviteCode);
 
-        userRepository.save(user);
-        return new AddUserResponseDto(inviteCode);
+        saveUser(user, userInfo);
+        return inviteCode;
     }
 
-    public AddUserResponseDto addStudent(AddUserDto userInfo) throws BadDataFormatException {
+    public String addStudent(UserDto userInfo) throws BadDataFormatException {
         return addUser(UserRole.STUDENT, userInfo);
     }
 
-    public AddUserResponseDto addTeacher(AddUserDto userInfo) throws BadDataFormatException {
+    public String addTeacher(UserDto userInfo) throws BadDataFormatException {
         return addUser(UserRole.TEACHER, userInfo);
     }
 
-    @Transactional
-    protected void removeUser(UserRole role, long id) throws BadDataFormatException {
-        var user = userRepository
-            .findById(id)
-            .orElseThrow(() -> new BadDataFormatException("User does not exist"));
-        if (!user.getRole().equals(role)) {
-            throw new BadDataFormatException(String.format("The role of this user is not %s", role));
-        }
-        userRepository.delete(user);
+    protected void updateUser(long id, UserRole role, UserDto userInfo) throws BadDataFormatException {
+        saveUser(findByIdAndCheckRole(id, role), userInfo);
+    }
+
+    public void updateStudent(long id, UserDto userInfo) throws BadDataFormatException {
+        updateUser(id, UserRole.STUDENT, userInfo);
+    }
+
+    public void updateTeacher(long id, UserDto userInfo) throws BadDataFormatException {
+        updateUser(id, UserRole.TEACHER, userInfo);
+    }
+
+    protected void removeUser(long id, UserRole role) throws BadDataFormatException {
+        userRepository.delete(findByIdAndCheckRole(id, role));
     }
 
     public void removeStudent(long id) throws BadDataFormatException {
-        removeUser(UserRole.STUDENT, id);
+        removeUser(id, UserRole.STUDENT);
     }
 
     public void removeTeacher(long id) throws BadDataFormatException {
-        removeUser(UserRole.TEACHER, id);
+        removeUser(id, UserRole.TEACHER);
     }
 }

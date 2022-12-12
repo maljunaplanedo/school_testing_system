@@ -1,7 +1,7 @@
 package com.maljunaplanedo.schooltestingsystem.controller;
 
-import com.maljunaplanedo.schooltestingsystem.dto.RegistrationFormDto;
-import com.maljunaplanedo.schooltestingsystem.dto.RegistrationResponseDto;
+import com.maljunaplanedo.schooltestingsystem.service.dto.RegistrationFormDto;
+import com.maljunaplanedo.schooltestingsystem.controller.dto.RegistrationResponseDto;
 import com.maljunaplanedo.schooltestingsystem.exception.BadDataFormatException;
 import com.maljunaplanedo.schooltestingsystem.exception.RegistrationException;
 import com.maljunaplanedo.schooltestingsystem.service.UserService;

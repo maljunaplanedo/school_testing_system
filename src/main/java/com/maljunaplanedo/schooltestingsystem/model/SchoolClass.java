@@ -18,6 +18,9 @@ public class SchoolClass {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "schoolClass")
+    @OneToMany(mappedBy = "schoolClass", cascade = CascadeType.REMOVE)
     private List<User> students;
+
+    @OneToMany(mappedBy = "schoolClass", cascade = CascadeType.REMOVE)
+    private List<ClassTask> assignedTasks;
 }

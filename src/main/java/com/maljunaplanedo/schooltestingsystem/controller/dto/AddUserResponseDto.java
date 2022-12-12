@@ -1,4 +1,4 @@
-package com.maljunaplanedo.schooltestingsystem.dto;
+package com.maljunaplanedo.schooltestingsystem.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,14 +1,14 @@
-package com.maljunaplanedo.schooltestingsystem.dto;
+package com.maljunaplanedo.schooltestingsystem.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.lang.Nullable;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegistrationResponseDto {
     private final boolean success;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final RegistrationFailureCause cause;
 
     private RegistrationResponseDto(boolean success, @Nullable RegistrationFailureCause cause) {

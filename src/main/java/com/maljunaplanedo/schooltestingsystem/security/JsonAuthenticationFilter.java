@@ -1,9 +1,6 @@
 package com.maljunaplanedo.schooltestingsystem.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maljunaplanedo.schooltestingsystem.dto.LoginFormDto;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;

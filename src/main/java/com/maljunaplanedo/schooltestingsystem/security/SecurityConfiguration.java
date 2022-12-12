@@ -57,7 +57,7 @@ public class SecurityConfiguration {
             .authorizeRequests()
                 .antMatchers("/api/admin/**").hasRole(UserRole.ADMIN.toString())
                 .antMatchers("/api/teacher/**").hasRole(UserRole.TEACHER.toString())
-                .antMatchers("/api/student/**", "/api/live/connect/**").hasRole(UserRole.STUDENT.toString())
+                .antMatchers("/api/student/**", "/api/live").hasRole(UserRole.STUDENT.toString())
                 .antMatchers("/api/auth/login", "/api/auth/register").anonymous()
                 .antMatchers("/api/auth/logout").authenticated()
                 .antMatchers(HttpMethod.GET).permitAll()
