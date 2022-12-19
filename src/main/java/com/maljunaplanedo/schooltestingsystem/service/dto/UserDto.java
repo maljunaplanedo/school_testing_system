@@ -12,7 +12,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
-@NoArgsConstructor
 public class UserDto {
     private Long id;
 
@@ -29,6 +28,10 @@ public class UserDto {
     private ClassDto schoolClass;
 
     private List<StudentTaskDto> studentTasks;
+
+    public UserDto() {
+        this.id = -1L;
+    }
 
     private UserDto(User user, boolean includeStudentTasks) {
         this.id = user.getId();
@@ -50,6 +53,10 @@ public class UserDto {
                 .map(StudentTaskDto::brief)
                 .toList();
         }
+    }
+
+    public static UserDto unauthorized() {
+        return new UserDto();
     }
 
     public static UserDto full(User user) {

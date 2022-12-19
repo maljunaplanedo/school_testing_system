@@ -134,6 +134,10 @@ public class UserService {
         return currentUser().orElseThrow(() -> new BadDataFormatException("No one is logged in"));
     }
 
+    public UserDto whoAmI() {
+        return currentUser().map(UserDto::brief).orElse(UserDto.unauthorized());
+    }
+
     public List<UserDto> getAllUsers(UserRole role) {
         return userRepository
             .findAllByRole(role)
