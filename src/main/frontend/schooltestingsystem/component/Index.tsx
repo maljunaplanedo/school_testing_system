@@ -1,20 +1,43 @@
-import React from "react";
-import {useAppSelector} from "../store/hooks";
-import {whoamiInvalidate, whoamiSelector, whoamiSync} from "../store/whoami";
+import React, {useEffect} from "react";
+import {whoami} from "../request/whoami";
 import useRedirect from "../util/redirect";
-
-var X = 0
+import Loading from "./Loading";
+import Error from "./Error";
+import {LoadingStatus} from "../request/handler";
 
 export default
 function Index() {
-    const redirect = useRedirect([whoamiInvalidate])
+    const whoamiState = whoami.useState()
+    const whoamiRefresh = whoami.useRefresh()
+    const whoamiSync = whoami.useSync()
 
-    const whoamiState = useAppSelector(whoamiSelector)
-    whoamiSync('/api/auth/whoami', whoamiState)
+    const redirect = useRedirect("/", whoamiRefresh)
 
-    if (X == 0) {
-        ++X
-        redirect('/login')
+    useEffect(whoamiSync)
+
+    useEffect(() => {
+        if (whoamiState.loading === LoadingStatus.FINISHED && whoamiState.object !== undefined) {
+            const whoamiUser = whoamiState.object
+
+            if (whoamiUser.id === -1) {
+                redirect('/login')
+            } else {
+                switch (whoamiUser.role) {
+                    case "ADMIN":
+                        redirect("/admin")
+                        break
+                    case "TEACHER":
+                        redirect("/teacher")
+                        break
+                    case "STUDENT":
+                        redirect("/student")
+                }
+            }
+        }
+    })
+
+    if (whoamiState.loading === LoadingStatus.FINISHED && whoamiState.object === undefined) {
+        return <Error />
     }
-    return (<p>{(whoamiState.object ? whoamiState.object.id : "F") + " " + whoamiState.loading}</p>)
+    return <Loading />
 }

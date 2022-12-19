@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
     entry: path.join(__dirname, 'schooltestingsystem', 'index.tsx'),
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],

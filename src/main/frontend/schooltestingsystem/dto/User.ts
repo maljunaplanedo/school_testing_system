@@ -1,13 +1,7 @@
-export enum UserRole {
-    ADMIN,
-    TEACHER,
-    STUDENT
-}
-
 export default interface IUser {
     id?: Number
     username?: string
-    role?: UserRole
+    role?: string
     inviteCode?: string
     firstName?: string
     lastName?: string

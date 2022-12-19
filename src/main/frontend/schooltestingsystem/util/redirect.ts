@@ -1,17 +1,28 @@
 import {useHistory} from "react-router-dom";
-import {useAppDispatch} from "../store/hooks";
-import {Action} from "@reduxjs/toolkit";
+import {useEffect} from "react";
 
-export default function useRedirect<T extends Action = Action>(invalidateActions?: T[]) {
-    const history = useHistory()
-    const dispatch = useAppDispatch()
+interface IRedirectStatus {
+    afterRedirect: boolean
+    onRedirect?: () => void
+}
 
-    return (location: string) => {
-        if (invalidateActions != null) {
-            for (const action of invalidateActions) {
-                dispatch(action)
+const redirectStatus: IRedirectStatus = {afterRedirect: false}
+
+export default function useRedirect(path: string, onRedirect?: (() => void)) {
+    useEffect(() => {
+        if (redirectStatus.afterRedirect) {
+            redirectStatus.afterRedirect = false
+            if (redirectStatus.onRedirect !== undefined) {
+                redirectStatus.onRedirect()
             }
         }
+    })
+
+    const history = useHistory()
+
+    return (location: string) => {
+        redirectStatus.afterRedirect = true
+        redirectStatus.onRedirect = onRedirect
         history.push(location)
     }
 }
