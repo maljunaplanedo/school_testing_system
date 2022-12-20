@@ -8,6 +8,14 @@ import {addTeacher} from "../request/addTeacher";
 import {getTeachers} from "../request/getTeachers";
 import {register} from "../request/register";
 import {registrationFormSlice} from "./registrationForm";
+import {addClass} from "../request/addClass";
+import {addClassFormSlice} from "./addClassForm";
+import {getClasses} from "../request/getClasses";
+import {addTask} from "../request/addTask";
+import {addTaskFormSlice} from "./addTaskForm";
+import {addStudent} from "../request/addStudent";
+import {addStudentFormSlice} from "./addStudentForm";
+import {getClass} from "../request/getClass";
 
 const reducer = combineReducers({
     whoami: whoami.reducer,
@@ -18,7 +26,15 @@ const reducer = combineReducers({
     addTeacherForm: addTeacherFormSlice.reducer,
     getTeachers: getTeachers.reducer,
     register: register.reducer,
-    registrationForm: registrationFormSlice.reducer
+    registrationForm: registrationFormSlice.reducer,
+    addClass: addClass.reducer,
+    addClassForm: addClassFormSlice.reducer,
+    getClasses: getClasses.reducer,
+    addTask: addTask.reducer,
+    addTaskForm: addTaskFormSlice.reducer,
+    addStudent: addStudent.reducer,
+    addStudentForm: addStudentFormSlice.reducer,
+    getClass: getClass.reducer
 })
 
 export const store = configureStore({reducer: reducer})

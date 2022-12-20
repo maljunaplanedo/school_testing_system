@@ -56,7 +56,7 @@ export default function Login() {
         )
 
         if (loginState.loading === LoadingStatus.FINISHED) {
-            return <> {loginForm} <Error /></>
+            return <> {loginForm} <Error message="Неверные данные для входа" /></>
         }
         return <>{loginForm}</>
     }

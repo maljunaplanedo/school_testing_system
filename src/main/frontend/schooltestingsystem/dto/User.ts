@@ -1,3 +1,6 @@
+import IClass from "./Class";
+import IStudentTask from "./StudentTask";
+
 export default interface IUser {
     id?: Number
     username?: string
@@ -5,6 +8,6 @@ export default interface IUser {
     inviteCode?: string
     firstName?: string
     lastName?: string
-    schoolClass?: string
-    studentTasks?: string[]
+    schoolClass?: IClass
+    studentTasks?: IStudentTask[]
 }

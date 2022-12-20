@@ -12,6 +12,12 @@ import {createRoot} from "react-dom/client";
 import Logout from "./component/Logout";
 import AddTeacher from "./component/AddTeacher";
 import Register from "./component/Register";
+import Classes from "./component/Classes";
+import AddClass from "./component/AddClass";
+import AddTask from "./component/AddTask";
+import Tasks from "./component/Tasks";
+import AddStudent from "./component/AddStudent";
+import Class from "./component/Class";
 
 const root = createRoot(document.querySelector('#root'))
 
@@ -26,6 +32,12 @@ root.render(
             <Route path="/logout" exact component={Logout} />
             <Route path="/admin/add_teacher" exact component={AddTeacher} />
             <Route path="/register" exact component={Register} />
+            <Route path="/teacher/classes" exact component={Classes} />
+            <Route path="/teacher/add_class" exact component={AddClass} />
+            <Route path="/teacher/tasks" exact component={Tasks} />
+            <Route path="/teacher/add_task" exact component={AddTask} />
+            <Route path="/teacher/add_student" exact component={AddStudent} />
+            <Route path="/teacher/class/:id" exact component={Class} />
         </BrowserRouter>
     </Provider>
 )
