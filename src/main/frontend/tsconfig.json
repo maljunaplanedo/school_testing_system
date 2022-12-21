@@ -5,6 +5,6 @@
     "jsx": "react",
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "node"
   }
 }
