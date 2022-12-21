@@ -1,5 +1,4 @@
 import React from "react";
-import Index from "./component";
 import {Provider} from "react-redux";
 import {store} from "./store/store";
 
@@ -22,6 +21,7 @@ import Assign from "./component/Assign";
 import StudentInfo from "./component/StudentInfo";
 import StudentIndex from "./component/StudentIndex";
 import StudentTask from "./component/StudentTask";
+import Index from "./component/Index";
 
 const root = createRoot(document.querySelector('#root'))
 
