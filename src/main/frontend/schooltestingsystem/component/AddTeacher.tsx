@@ -43,6 +43,7 @@ export default function AddTeacher() {
                     <LogoutButton redirect={redirect} />
                     <IndexButton redirect={redirect} />
                     <h1>{addTeacherState.object.inviteCode}</h1>
+                    <p>А кнопка эта не сработает, потому что не https(((</p>
                     <button onClick={() => navigator.clipboard.writeText(addTeacherState.object.inviteCode)}>
                         Скопировать
                     </button>
