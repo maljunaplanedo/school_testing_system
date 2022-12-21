@@ -21,10 +21,6 @@ export interface IHttpRequestParams<B> {
     body?: B
 }
 
-export interface IWebsocketRequestParams<B> {
-
-}
-
 function requestHandler<R, B, P>(name: string, fetcher: ReturnType<typeof createAsyncThunk<R, P>>) {
     const useState = () => {
         return useAppSelector(state => state[name as keyof typeof state] as IRequestHandlerState<R>)
