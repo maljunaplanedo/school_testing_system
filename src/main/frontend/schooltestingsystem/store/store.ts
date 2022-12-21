@@ -16,6 +16,14 @@ import {addTaskFormSlice} from "./addTaskForm";
 import {addStudent} from "../request/addStudent";
 import {addStudentFormSlice} from "./addStudentForm";
 import {getClass} from "../request/getClass";
+import {assign} from "../request/assign";
+import {assignFormSlice} from "./assignForm";
+import {getTasks} from "../request/getTasks";
+import {getStudentForStudent, getStudentForTeacher} from "../request/getStudent";
+import {taskRunnerReducer} from "./taskRunner";
+import {getStudentTask} from "../request/getStudentTask";
+import {beginStudentTask} from "../request/beginStudentTask";
+import {endStudentTask} from "../request/endStudentTask";
 
 const reducer = combineReducers({
     whoami: whoami.reducer,
@@ -34,7 +42,16 @@ const reducer = combineReducers({
     addTaskForm: addTaskFormSlice.reducer,
     addStudent: addStudent.reducer,
     addStudentForm: addStudentFormSlice.reducer,
-    getClass: getClass.reducer
+    getClass: getClass.reducer,
+    assign: assign.reducer,
+    assignForm: assignFormSlice.reducer,
+    getTasks: getTasks.reducer,
+    getStudentForTeacher: getStudentForTeacher.reducer,
+    getStudentForStudent: getStudentForStudent.reducer,
+    taskRunner: taskRunnerReducer,
+    getStudentTask: getStudentTask.reducer,
+    beginStudentTask: beginStudentTask.reducer,
+    endStudentTask: endStudentTask.reducer
 })
 
 export const store = configureStore({reducer: reducer})

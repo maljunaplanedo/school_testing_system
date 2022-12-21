@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {FormEvent, useEffect, useRef} from "react";
 import {login} from "../request/login";
 import useRedirect from "../util/redirect";
 import {LoadingStatus} from "../request/handler";
@@ -33,7 +33,8 @@ export default function Login() {
         }))
     }
 
-    const onSubmit = () => {
+    const onSubmit = (event: FormEvent) => {
+        event.preventDefault()
         loginSync({body: loginFormData}, true)
         return false
     }
@@ -49,9 +50,9 @@ export default function Login() {
                 <form name="login" onSubmit={onSubmit}>
                     <input type="text" ref={usernameField} onInput={onInput} placeholder="Логин" />
                     <input type="password" ref={passwordField} onInput={onInput} placeholder="Пароль" />
-                    <input type="submit" />
+                    <input type="submit" value="Войти" />
+                    <button onClick={() => redirect('/register')}>Еще не зарегистрированы?</button>
                 </form>
-                <button onClick={() => redirect('/register')}>Зарегистрироваться</button>
             </>
         )
 

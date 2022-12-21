@@ -27,7 +27,7 @@ export default function Classes() {
                     <button onClick={() => redirect("/teacher/add_class")}>Добавить класс</button>
                     <ul>
                         {getClassesState.object.map((schoolClass, i) =>
-                            <li key={i}><button onClick={() => redirect('/teacher/class/' + schoolClass.id)}>
+                            <li key={i}><button className="ref" onClick={() => redirect('/teacher/class/' + schoolClass.id)}>
                                 {schoolClass.name}
                             </button></li>
                         )}

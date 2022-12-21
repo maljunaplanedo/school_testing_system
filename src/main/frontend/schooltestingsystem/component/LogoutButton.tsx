@@ -5,5 +5,5 @@ export interface ILogoutButtonProps {
 }
 
 export default function LogoutButton({redirect}: ILogoutButtonProps) {
-    return <button onClick={() => redirect('/logout')}>Logout</button>
+    return <button onClick={() => redirect('/logout')}>Выйти</button>
 }

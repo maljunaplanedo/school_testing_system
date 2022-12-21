@@ -1,6 +1,6 @@
 import {addStudent} from "../request/addStudent";
 import useRedirect from "../util/redirect";
-import React, {useEffect, useRef} from "react";
+import React, {FormEvent, useEffect, useRef} from "react";
 import {LoadingStatus} from "../request/handler";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {addStudentFormSelector, addStudentFormUpdate} from "../store/addStudentForm";
@@ -34,7 +34,8 @@ export default function AddStudent() {
     const lastNameField = useRef<HTMLInputElement>(null)
     const classSelectField = useRef<HTMLSelectElement>(null)
 
-    const onSubmit = () => {
+    const onSubmit = (event: FormEvent) => {
+        event.preventDefault()
         addStudentSync({body: addStudentFormData})
         return false
     }
@@ -68,6 +69,9 @@ export default function AddStudent() {
                     <LogoutButton redirect={redirect} />
                     <IndexButton redirect={redirect} />
                     <h1>{addStudentState.object.inviteCode}</h1>
+                    <button onClick={() => navigator.clipboard.writeText(addStudentState.object.inviteCode)}>
+                        Скопировать
+                    </button>
                 </>
             )
         } else {
@@ -80,10 +84,11 @@ export default function AddStudent() {
             <>
                 <LogoutButton redirect={redirect} />
                 <IndexButton redirect={redirect} />
+                <h3>Имя на русском</h3>
                 <form name="add_student" onSubmit={onSubmit}>
                     <input type="text" onInput={onInput} placeholder="Имя" ref={firstNameField} />
                     <input type="text" onInput={onInput} placeholder="Фамилия" ref={lastNameField} />
-                    <select onSelect={onInput} ref={classSelectField}>
+                    <select onInput={onInput} ref={classSelectField}>
                         {
                             getClassesState.object.map((schoolClass, i) =>
                                 <option value={schoolClass.id} key={i}>
@@ -92,7 +97,7 @@ export default function AddStudent() {
                             )
                         }
                     </select>
-                    <input type="submit" />
+                    <input type="submit" value="Добавить" />
                 </form>
             </>
         )

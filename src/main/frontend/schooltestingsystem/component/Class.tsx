@@ -38,7 +38,7 @@ export default function Class() {
             <h1>{getClassState.object.name}</h1>
             <ul>
                 {getClassState.object.students.map((student, i) =>
-                    <li><button onClick={() => redirect('/teacher/student/' + student.id)}>Перейти</button>
+                    <li key={i}><button className="ref" onClick={() => redirect('/teacher/student/' + student.id)}>Перейти</button>
                         {student.firstName + " " + student.lastName + " " + (student.inviteCode || "")}
                     </li>
                 )}

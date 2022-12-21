@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {FormEvent, useEffect, useRef} from "react";
 import {register} from "../request/register";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {registrationFormSelector, registrationFormUpdate} from "../store/registrationForm";
@@ -40,7 +40,8 @@ export default function Register() {
         }))
     }
 
-    const onSubmit = () => {
+    const onSubmit = (event: FormEvent) => {
+        event.preventDefault()
         registerSync({body: registrationFormData}, true)
         return false
     }
@@ -58,9 +59,9 @@ export default function Register() {
                 <input type="text" onInput={onInput} name="username" ref={usernameField} placeholder="Логин" />
                 <input type="password" onInput={onInput} name="password" ref={passwordField} placeholder="Пароль" />
                 <input type="text" onInput={onInput} name="inviteCode" ref={inviteCodeField} placeholder="Пригласительный код" />
-                <input type="submit" />
+                <input type="submit" value="Регистрация" />
+                <button onClick={() => redirect("/login")}>Уже зарегистрированы?</button>
             </form>
-            <button onClick={() => redirect("/login")}>Войти</button>
         </>
     )
 

@@ -1,6 +1,6 @@
 import {addTask} from "../request/addTask";
 import useRedirect from "../util/redirect";
-import React, {useEffect, useRef} from "react";
+import React, {FormEvent, useEffect, useRef} from "react";
 import {LoadingStatus} from "../request/handler";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {addTaskFormSelector, addTaskFormUpdate, ITaskFormState} from "../store/addTaskForm";
@@ -9,6 +9,8 @@ import ILiveGapsAnswer from "../dto/LiveGapsAnswer";
 import {addClassFormUpdate} from "../store/addClassForm";
 import Error from "./Error";
 import Loading from "./Loading";
+import LogoutButton from "./LogoutButton";
+import IndexButton from "./IndexButton";
 
 export default function AddTask() {
     const addTaskState = addTask.useState()
@@ -19,13 +21,20 @@ export default function AddTask() {
 
     useEffect(() => {
         if (addTaskState.loading === LoadingStatus.FINISHED && addTaskState.object !== undefined) {
-            redirect("/teacher/tasks")
+            redirect("/")
         }
     })
 
     const dispatch = useAppDispatch()
 
     const addTaskFormData = useAppSelector(addTaskFormSelector)
+
+    useEffect(() => {
+        dispatch(addTaskFormUpdate({
+            ...addTaskFormData,
+            valid: true
+        }))
+    }, [])
 
     const nameField = useRef<HTMLInputElement>(null)
     const statementField = useRef<HTMLInputElement>(null)
@@ -54,7 +63,7 @@ export default function AddTask() {
             }
         }
 
-        if (braceBalance != 0) {
+        if (braceBalance !== 0 || braces === 0) {
             console.log(3)
             return null
         }
@@ -84,12 +93,14 @@ export default function AddTask() {
         return result
     }
 
-    const onSubmit = () => {
+    const onSubmit = (event: FormEvent) => {
+        event.preventDefault()
         const task = convert(addTaskFormData)
         if (task === null) {
             dispatch(addClassFormUpdate({...addTaskFormData, valid: false}))
             return false
         }
+        dispatch(addClassFormUpdate({...addTaskFormData, valid: true}))
         addTaskSync({body: task}, true)
         return false
     }
@@ -106,21 +117,23 @@ export default function AddTask() {
 
     if (addTaskState.loading === LoadingStatus.FINISHED && addTaskState.object === undefined) {
         return <Error/>
-    } else if (addTaskState.loading === LoadingStatus.IN_PROGRESS) {
+    } else if (addTaskState.loading === LoadingStatus.IN_PROGRESS || (
+        addTaskState.loading === LoadingStatus.FINISHED && addTaskState.object !== undefined
+    )) {
         return <Loading/>
     } else {
         const form = (
             <>
-                <p>Как вводить задание? Условие - текст с пропусками. На месте пропуска - квадратные скобки.
-                Например: <i>This [] gaps task [] you.</i> Ответ - ответы на пропуски через ';'. Пример:
-                <i>live; for</i>
+                <LogoutButton redirect={redirect}/>
+                <IndexButton redirect={redirect} />
+                <p>Как вводить задание? Условие - текст с пропусками. На месте пропуска - квадратные скобки. Например: <i>This [] gaps task [] you.</i> Ответ - ответы на пропуски через ';'. Пример: <i>live; for</i>
                 </p>
-                <form name="addTask" onSubmit={onSubmit}>
+                <form name="addTask" className="big" onSubmit={onSubmit}>
                     <input type="text" onInput={onInput} ref={nameField} name="name" placeholder="Название" />
                     <input type="text" onInput={onInput} ref={statementField} name="statement" placeholder="Условие" />
                     <input type="text" onInput={onInput} ref={answerField} name="answer" placeholder="Ответ" />
                     <input type="number" onInput={onInput} ref={durationField} name="duration" placeholder="Время на выполнение, с" />
-                    <input type="submit" />
+                    <input type="submit" value="Добавить" />
                 </form>
             </>
         )

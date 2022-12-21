@@ -3,8 +3,9 @@ import Index from "./component";
 import {Provider} from "react-redux";
 import {store} from "./store/store";
 
+import './style.css'
+
 import {BrowserRouter, Route} from "react-router-dom";
-import Student from "./component/Student";
 import Login from "./component/Login";
 import Teacher from "./component/Teacher";
 import Admin from "./component/Admin";
@@ -15,9 +16,12 @@ import Register from "./component/Register";
 import Classes from "./component/Classes";
 import AddClass from "./component/AddClass";
 import AddTask from "./component/AddTask";
-import Tasks from "./component/Tasks";
 import AddStudent from "./component/AddStudent";
 import Class from "./component/Class";
+import Assign from "./component/Assign";
+import StudentInfo from "./component/StudentInfo";
+import StudentIndex from "./component/StudentIndex";
+import StudentTask from "./component/StudentTask";
 
 const root = createRoot(document.querySelector('#root'))
 
@@ -26,7 +30,7 @@ root.render(
         <BrowserRouter>
             <Route path="/" exact component={Index} />
             <Route path="/login" exact component={Login} />
-            <Route path="/student" exact component={Student} />
+            <Route path="/student" exact component={StudentIndex} />
             <Route path="/teacher" exact component={Teacher} />
             <Route path="/admin" exact component={Admin} />
             <Route path="/logout" exact component={Logout} />
@@ -34,10 +38,12 @@ root.render(
             <Route path="/register" exact component={Register} />
             <Route path="/teacher/classes" exact component={Classes} />
             <Route path="/teacher/add_class" exact component={AddClass} />
-            <Route path="/teacher/tasks" exact component={Tasks} />
             <Route path="/teacher/add_task" exact component={AddTask} />
             <Route path="/teacher/add_student" exact component={AddStudent} />
             <Route path="/teacher/class/:id" exact component={Class} />
+            <Route path="/teacher/assign" exact component={Assign} />
+            <Route path="/teacher/student/:id" exact component={StudentInfo} />
+            <Route path="/student/task/:id" exact component={StudentTask} />
         </BrowserRouter>
     </Provider>
 )

@@ -5,5 +5,5 @@ interface IErrorProps {
 }
 
 export default function Error(props: IErrorProps) {
-    return <h1 style={{color: 'red'}}>Error {props.message === undefined ? "" : props.message}</h1>
+    return <h1 className="error">Ошибка! {props.message === undefined ? "" : props.message}</h1>
 }

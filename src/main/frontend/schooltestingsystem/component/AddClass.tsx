@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {FormEvent, useEffect, useRef} from "react";
 import {addClass} from "../request/addClass";
 import useRedirect from "../util/redirect";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
@@ -32,7 +32,8 @@ export default function AddClass() {
 
     const nameField = useRef<HTMLInputElement>(null)
 
-    const onSubmit = () => {
+    const onSubmit = (event: FormEvent) => {
+        event.preventDefault()
         addClassSync({body: addClassFormData}, true)
         return false
     }
@@ -63,7 +64,7 @@ export default function AddClass() {
                 <IndexButton redirect={redirect}/>
                 <form name="addClass" onSubmit={onSubmit}>
                     <input type="text" onInput={onInput} placeholder="Название" ref={nameField}/>
-                    <input type="submit" />
+                    <input type="submit" value="Добавить" />
                 </form>
             </>
         )

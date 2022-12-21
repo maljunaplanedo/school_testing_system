@@ -1,6 +1,6 @@
 import {addTeacher} from "../request/addTeacher";
 import useRedirect from "../util/redirect";
-import React, {useRef} from "react";
+import React, {FormEvent, useRef} from "react";
 import {LoadingStatus} from "../request/handler";
 import {useAppDispatch, useAppSelector} from "../store/hooks";
 import {addTeacherFormSelector, addTeacherFormUpdate} from "../store/addTeacherForm";
@@ -23,7 +23,8 @@ export default function AddTeacher() {
     const firstNameField = useRef<HTMLInputElement>(null)
     const lastNameField = useRef<HTMLInputElement>(null)
 
-    const onSubmit = () => {
+    const onSubmit = (event: FormEvent) => {
+        event.preventDefault()
         addTeacherSync({body: addTeacherFormData})
         return false
     }
@@ -42,6 +43,9 @@ export default function AddTeacher() {
                     <LogoutButton redirect={redirect} />
                     <IndexButton redirect={redirect} />
                     <h1>{addTeacherState.object.inviteCode}</h1>
+                    <button onClick={() => navigator.clipboard.writeText(addTeacherState.object.inviteCode)}>
+                        Скопировать
+                    </button>
                 </>
             )
         } else {
@@ -54,10 +58,11 @@ export default function AddTeacher() {
             <>
                 <LogoutButton redirect={redirect} />
                 <IndexButton redirect={redirect} />
+                <h3>Имя на русском</h3>
                 <form name="add_teacher" onSubmit={onSubmit}>
                     <input type="text" onInput={onInput} placeholder="Имя" ref={firstNameField} />
                     <input type="text" onInput={onInput} placeholder="Фамилия" ref={lastNameField} />
-                    <input type="submit" />
+                    <input type="submit" value="Добавить" />
                 </form>
             </>
         )

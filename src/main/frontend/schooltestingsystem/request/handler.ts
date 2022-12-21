@@ -124,3 +124,5 @@ export function httpRequestHandler<R, B>(name: string, url: string, method: stri
         }
     ))
 }
+
+export type IHttpRequestHandler<R, B> = ReturnType<typeof httpRequestHandler<R, B>>
