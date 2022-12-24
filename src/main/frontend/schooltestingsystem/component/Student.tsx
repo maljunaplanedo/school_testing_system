@@ -66,9 +66,11 @@ export default function Student({getStudent, isTeacher, path, id}: IStudentProps
                         </>
                         <>
                             {
-                                task.classTask.task.name + " " + messageFromStatus(task.status) +
-                                (displayMarkOrNot(task.status) ? (" " + task.mark + "/" + task.classTask.task.maxMark
+                                task.classTask.task.name + " Статус: " + messageFromStatus(task.status) +
+                                (displayMarkOrNot(task.status) ? (" Оценка: " + task.mark + "/" +
+                                    task.classTask.task.maxMark
                                 ) : "")
+                                + " Дедлайн: " + new Date(task.classTask.deadline * 1000).toLocaleString()
                             }
                         </>
                     </li>

@@ -20,7 +20,10 @@ public class StudentTaskUtil {
     @PostLoad
     public void checkIfTimesUp(StudentTask studentTask) {
         var now = currentTime();
-        if (studentTask.getStatus() == StudentTaskStatus.IN_PROGRESS && now > studentTask.getLimitTime()) {
+        if (
+            (studentTask.getStatus() == StudentTaskStatus.IN_PROGRESS && now > studentTask.getLimitTime()) ||
+            (studentTask.getStatus() == StudentTaskStatus.NOT_STARTED && now > studentTask.getClassTask().getDeadline())
+        ) {
             finishTaskAt(studentTask, now);
         }
     }
