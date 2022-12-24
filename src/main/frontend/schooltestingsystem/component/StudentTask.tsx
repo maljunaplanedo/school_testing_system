@@ -12,7 +12,6 @@ import {taskRunnerActions, taskRunnerSelector} from "../store/taskRunner";
 import ILiveGapsAnswer, {ILiveGapsGap} from "../dto/LiveGapsAnswer";
 import ITaskRunnerResponse from "../dto/TaskRunnerResponse";
 import LogoutButton from "./LogoutButton";
-import {current} from "@reduxjs/toolkit";
 
 interface IStudentTaskPathParams {
     id: string
@@ -89,6 +88,15 @@ export default function StudentTask() {
             getStudentTaskState.object.status === "NOT_STARTED"
         ) {
             beginStudentTaskSync({suffix: id})
+        }
+    })
+
+    useEffect(() => {
+        if (getStudentTaskState.loading === LoadingStatus.FINISHED &&
+            getStudentTaskState.object !== undefined &&
+            getStudentTaskState.object.status === "FINISHED"
+        ) {
+            redirect('/')
         }
     })
 
